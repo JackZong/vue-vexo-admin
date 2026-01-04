@@ -1,4 +1,4 @@
-# PAX-ADMIN-PRO
+# VUE VEXO ADMIN
 
 ## Recommended IDE Setup
 
