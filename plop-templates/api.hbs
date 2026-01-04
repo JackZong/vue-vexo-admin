@@ -1,0 +1,28 @@
+
+
+import request from '@/utils/request'
+
+// {{functionName}}列表
+export function {{moduleName}}Lists(params?: Record<string, any>) {
+    return request.get({ url: '/{{moduleName}}', params })
+}
+
+// {{functionName}}详情
+export function {{moduleName}}Detail(id: number) {
+    return request.get({ url: `/{{moduleName}}/${id}` })
+}
+
+// {{functionName}}新增
+export function {{moduleName}}Add(params: Record<string, any>) {
+    return request.post({ url: '/{{moduleName}}', params })
+}
+
+// {{functionName}}编辑
+export function {{moduleName}}Edit(data: Record<string, any>) {
+    return request.put({ url: `/{{moduleName}}/${data.id}`, data })
+}
+
+// {{functionName}}删除
+export function {{moduleName}}Delete(id: number) {
+    return request.post({ url: `/{{moduleName}}/${id}` })
+}

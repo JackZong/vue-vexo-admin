@@ -1,0 +1,82 @@
+<!-- /*
+  * ===========================================================================================
+  * = COPYRIGHT
+  *          PAX Computer Technology (Shenzhen) Co., Ltd. PROPRIETARY INFORMATION
+  *   This software is supplied under the terms of a license agreement or nondisclosure
+  *   agreement with PAX Computer Technology (Shenzhen) Co., Ltd. and may not be copied or
+  *   disclosed except in accordance with the terms in that agreement.
+  *     Copyright (C) 2022-2023 PAX Computer Technology (Shenzhen) Co., Ltd. All rights reserved.
+  * Description: // Detail description about the function of this module,
+  *             // interfaces with the other modules, and dependencies.
+  * Revision History:
+  * Date                  Author                 Action
+  * 2025/12/11            PAX                    Create
+  * ===========================================================================================
+*/
+ -->
+<template>
+    <div class="edit-popup">
+        <popup
+            ref="popupRef"
+            :title="popupTitle"
+            :async="true"
+            width="550px"
+            :clickModalClose="true"
+            @confirm="handleSubmit"
+            @close="handleClose"
+        >
+            <el-form ref="formRef" :model="formData" label-width="84px" :rules="formRules">
+                <!-- 表单字段区域（由辅助函数填充） -->
+            </el-form>
+        </popup>
+    </div>
+</template>
+
+<script lang="ts" setup>
+import type { FormInstance } from 'element-plus'
+
+import { {{moduleName}}Add, {{moduleName}}Detail, {{moduleName}}Edit } from '@/api/{{moduleName}}'
+import Popup from '@/components/popup/index.vue'
+import feedback from '@/utils/feedback'
+
+const emit = defineEmits(['success', 'close'])
+const formRef = shallowRef<FormInstance>()
+const popupRef = shallowRef<InstanceType<typeof Popup>>()
+
+const mode = ref('add')
+const popupTitle = computed(() => mode.value === 'edit' ? '编辑{{functionName}}' : '新增{{functionName}}')
+
+const formData = reactive({
+    {{primaryKey}}: '',
+    // 插入字段默认值模板
+})
+
+const formRules = {
+    // 插入规则模板
+}
+
+const handleSubmit = async () => {
+    await formRef.value?.validate()
+    const data: any = { ...formData }
+    mode.value === 'edit' ? await {{moduleName}}Edit(data) : await {{moduleName}}Add(data)
+    popupRef.value?.close()
+    feedback.msgSuccess('操作成功')
+    emit('success')
+}
+
+const open = (type = 'add') => {
+    mode.value = type
+    popupRef.value?.open()
+}
+
+const getDetail = async (row: Record<string, any>) => {
+    const data = await {{moduleName}}Detail(row.{{primaryKey}})
+    Object.assign(formData, data)
+}
+
+const handleClose = () => {
+    emit('close')
+}
+
+defineExpose({ open, getDetail })
+</script>

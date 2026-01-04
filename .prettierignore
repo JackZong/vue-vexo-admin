@@ -1,0 +1,6 @@
+.vscode
+.idea
+plop-templates/
+dist/
+node_modules/
+eslint.config.mjs
