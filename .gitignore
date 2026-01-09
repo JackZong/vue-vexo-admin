@@ -36,7 +36,6 @@ components.d.ts
 *.sw?
 
 # Docs
-.vitepress
 **/.vitepress/cache
 **/.vitepress/dist
 
