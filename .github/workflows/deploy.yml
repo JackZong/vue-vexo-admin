@@ -33,7 +33,7 @@ jobs:
             # Remote user
             REMOTE_USER: ${{ secrets.USERNAME }}
             # Source directory, path relative to `$GITHUB_WORKSPACE` root, eg: `dist/`
-            SOURCE: ./docs/
+            SOURCE: /dist/
             # Target directory
             TARGET: /www/wwwroot/vexo.paxcq.com/dist/
 
