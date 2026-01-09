@@ -48,7 +48,7 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'gitlab', link: 'https://gitlab-sys.paxsz.com/paxfe/pax-admin-pro' }
+      { icon: 'github', link: 'https://github.com/JackZong/vue-vexo-admin' }
     ]
   }
 })
