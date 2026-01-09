@@ -37,9 +37,8 @@ components.d.ts
 
 # Docs
 .vitepress
-docs
-docs/.vitepress/cache
-docs/.vitepress/dist
+**/.vitepress/cache
+**/.vitepress/dist
 
 # .env
 # .env.development

@@ -1,0 +1,279 @@
+# 样式
+
+项目中使用了scss作为预处理语言，同时也使用了tailwindcss
+样式文件位于`src/styles`下面：
+
+```ts
+├──📂 styles
+│  ├── dark.css       # 深色模式下的css变量
+│  ├── element.scss   # 修改element-plus组件的样式
+│  ├── index.scss     # 入口
+│  ├── tailwind.css   # 引入tailwindcss样式表
+│  ├── var.css        # css变量
+```
+
+## tailwindcss
+
+具体使用说明详见https://tailwindcss.com/
+
+在vscode中安装插件[Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)，可以得到提示，如果没有提示出现，就按空格键
+
+![An image](/images/tailwind_tips.png)
+
+tailwindcss配置说明：
+
+`@/styles/tailwind.css`
+
+```ts
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: rgb(184, 232, 255);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@theme {
+  --color-white: var(--color-white);
+
+  --color-primary: var(--el-color-primary);
+  --color-primary-light-3: var(--el-color-primary-light-3);
+  --color-primary-light-5: var(--el-color-primary-light-5);
+  --color-primary-light-7: var(--el-color-primary-light-7);
+  --color-primary-light-8: var(--el-color-primary-light-8);
+  --color-primary-light-9: var(--el-color-primary-light-9);
+  --color-primary-dark-2: var(--el-color-primary-dark-2);
+
+  --color-success: var(--el-color-success);
+  --color-warning: var(--el-color-warning);
+  --color-danger: var(--el-color-danger);
+  --color-error: var(--el-color-error);
+  --color-info: var(--el-color-info);
+  --color-body: var(--el-bg-color);
+  --color-page: var(--el-bg-color-page);
+  --color-tx-primary: var(--el-text-color-primary);
+  --color-tx-regular: var(--el-text-color-regular);
+  --color-tx-secondary: var(--el-text-color-secondary);
+  --color-tx-placeholder: var(--el-text-color-placeholder);
+  --color-tx-disabled: var(--el-text-color-disabled);
+  --color-br: var(--el-border-color);
+  --color-br-light: var(--el-border-color-light);
+  --color-br-extra-light: var(--el-border-color-extra-light);
+  --color-br-dark: var(--el-border-color-dark);
+  --color-fill: var(--el-fill-color);
+  --color-fill-light: var(--el-fill-color-light);
+  --color-fill-lighter: var(--el-fill-color-lighter);
+  --color-mask: var(--el-mask-color);
+
+  --font-sans:
+    PingFang SC, Arial, Hiragino Sans GB, Microsoft YaHei, sans-serif;
+
+  --shadow: var(--el-box-shadow);
+  --shadow-light: var(--el-box-shadow-light);
+  --shadow-lighter: var(--el-box-shadow-lighter);
+  --shadow-dark: var(--el-box-shadow-dark);
+
+  --text-xs: var(--el-font-size-extra-small);
+  --text-sm: var(--el-font-size-small);
+  --text-base: var(--el-font-size-base);
+  --text-lg: var(--el-font-size-medium);
+  --text-xl: var(--el-font-size-large);
+  --text-2xl: var(--el-font-size-extra-large);
+  --text-3xl: 20px;
+  --text-4xl: 24px;
+  --text-5xl: 28px;
+  --text-6xl: 30px;
+  --text-7xl: 36px;
+  --text-8xl: 48px;
+  --text-9xl: 60px;
+
+  --spacing-0: 0px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+  --spacing-9: 36px;
+  --spacing-10: 40px;
+  --spacing-11: 44px;
+  --spacing-12: 48px;
+  --spacing-14: 56px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+  --spacing-28: 112px;
+  --spacing-32: 128px;
+  --spacing-36: 144px;
+  --spacing-40: 160px;
+  --spacing-44: 176px;
+  --spacing-48: 192px;
+  --spacing-52: 208px;
+  --spacing-56: 224px;
+  --spacing-60: 240px;
+  --spacing-64: 256px;
+  --spacing-72: 288px;
+  --spacing-80: 320px;
+  --spacing-96: 384px;
+  --spacing-px: 1px;
+  --spacing-0_5: 2px;
+  --spacing-1_5: 6px;
+  --spacing-2_5: 10px;
+  --spacing-3_5: 14px;
+
+  --leading-3: 12px;
+  --leading-4: 16px;
+  --leading-5: 20px;
+  --leading-6: 24px;
+  --leading-7: 28px;
+  --leading-8: 32px;
+  --leading-9: 36px;
+  --leading-10: 40px;
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  --radius-10: 10px;
+
+}
+```
+
+## 页面，组件的样式
+
+- 开启`scoped`
+
+没有加`scoped`属性，会污染全局样式
+
+```ts
+<style scoped></style>
+```
+
+- 样式穿透
+
+开启`scoped`属性后需要如果需要将样式作用到子组件上，可以这样处理：
+
+```ts
+<style scoped>
+:deep(.el-menu-item) {
+    
+}
+</style>
+```
