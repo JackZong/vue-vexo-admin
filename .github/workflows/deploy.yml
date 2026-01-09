@@ -6,64 +6,90 @@ on:
       - main
 
 jobs:
-  deploy-playground:
-    name: Deploy Push Playground
-    if: github.actor != 'dependabot[bot]' && !contains(github.event.head_commit.message, '[skip ci]') && github.repository == 'JackZong/vue-vexo-admin'
-    runs-on: ubuntu-latest
-    environment: PAXCQ
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    deploy-playground:
+        name: Deploy Push Playground
+        if: github.actor != 'dependabot[bot]' && !contains(github.event.head_commit.message, '[skip ci]') && github.repository == 'JackZong/vue-vexo-admin'
+        runs-on: ubuntu-latest
+        environment: PAXCQ
 
-      - name: Setup Node
-        uses: ./.github/actions/setup-node
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
 
-      - name: Build
-        run: pnpm build
+          - name: Setup Node
+            uses: ./.github/actions/setup-node
 
-      - name: ssh deploy
-        uses: easingthemes/ssh-deploy@v5.1.0
-        with:
-            # Private key part of an SSH key pair
-            SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-            # Remote host
-            REMOTE_HOST: ${{ secrets.HOST }}
-            # Remote user
-            REMOTE_USER: ${{ secrets.USERNAME }}
-            # Source directory, path relative to `$GITHUB_WORKSPACE` root, eg: `dist/`
-            SOURCE: /dist/
-            # Target directory
-            TARGET: /www/wwwroot/vexo.paxcq.com/dist/
+          - name: Build
+            run: pnpm build
 
-  deploy-docs:
-    name: Deploy Push Docs
-    if: github.actor != 'dependabot[bot]' && !contains(github.event.head_commit.message, '[skip ci]') && github.repository == 'JackZong/vue-vexo-admin'
-    runs-on: ubuntu-latest
-    environment: PAXCQ
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+          - name: Zip dist
+            run: |
+                cd dist
+                zip -r ../dist.zip .
+                cd ..
 
-      - name: Setup Node
-        uses: ./.github/actions/setup-node
+          - name: Upload dist.zip
+            uses: appleboy/scp-action@v0.1.7
+            with:
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.USERNAME }}
+                key: ${{ secrets.PRIVATE_KEY }}
+                source: dist.zip
+                target: /tmp
 
-      - name: Build
-        run: pnpm docs:build
+          - name: Deploy on server
+            uses: appleboy/ssh-action@v1.0.3
+            with:
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.USERNAME }}
+                key: ${{ secrets.PRIVATE_KEY }}
+                script: |
+                    set -e
+                    mkdir -p /www/wwwroot/vexo.paxcq.com
+                    rm -rf /www/wwwroot/vexo.paxcq.com/dist
+                    unzip -o /tmp/dist.zip -d /www/wwwroot/vexo.paxcq.com/dist
+                    rm -f /tmp/dist.zip
+                
+    deploy-docs:
+        name: Deploy Push Docs
+        if: github.actor != 'dependabot[bot]' && !contains(github.event.head_commit.message, '[skip ci]') && github.repository == 'JackZong/vue-vexo-admin'
+        runs-on: ubuntu-latest
+        environment: PAXCQ
 
-      - name: ssh deploy
-        uses: easingthemes/ssh-deploy@v5.1.0
-        with:
-            # Private key part of an SSH key pair
-            SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-            # Remote host
-            REMOTE_HOST: ${{ secrets.HOST }}
-            # Remote user
-            REMOTE_USER: ${{ secrets.USERNAME }}
-            # Source directory, path relative to `$GITHUB_WORKSPACE` root, eg: `dist/`
-            SOURCE: ./docs/.vitepress/dist/
-            # Target directory
-            TARGET: /www/wwwroot/docs.paxcq.com/dist/
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Setup Node
+            uses: ./.github/actions/setup-node
+
+          - name: Build Docs
+            run: pnpm docs:build
+
+          - name: Zip docs dist
+            run: |
+                cd docs/.vitepress/dist
+                zip -r ../../../docs-dist.zip .
+                cd -
+
+          - name: Upload docs-dist.zip
+            uses: appleboy/scp-action@v0.1.7
+            with:
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.USERNAME }}
+                key: ${{ secrets.PRIVATE_KEY }}
+                source: docs-dist.zip
+                target: /tmp
+
+          - name: Deploy docs on server
+            uses: appleboy/ssh-action@v1.0.3
+            with:
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.USERNAME }}
+                key: ${{ secrets.PRIVATE_KEY }}
+                script: |
+                    set -e
+                    mkdir -p /www/wwwroot/docs.paxcq.com
+                    rm -rf /www/wwwroot/docs.paxcq.com/dist
+                    unzip -o /tmp/docs-dist.zip -d /www/wwwroot/docs.paxcq.com/dist
+                    rm -f /tmp/docs-dist.zip
