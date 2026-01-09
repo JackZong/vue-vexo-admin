@@ -10,6 +10,7 @@ jobs:
     name: Deploy Push Playground
     if: github.actor != 'dependabot[bot]' && !contains(github.event.head_commit.message, '[skip ci]') && github.repository == 'JackZong/vue-vexo-admin'
     runs-on: ubuntu-latest
+    environment: PAXCQ
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,6 +41,7 @@ jobs:
     name: Deploy Push Docs
     if: github.actor != 'dependabot[bot]' && !contains(github.event.head_commit.message, '[skip ci]') && github.repository == 'JackZong/vue-vexo-admin'
     runs-on: ubuntu-latest
+    environment: PAXCQ
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
