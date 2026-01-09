@@ -1,0 +1,81 @@
+name: Deploy Website on push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-playground:
+    name: Deploy Push Playground
+    if: github.actor != 'dependabot[bot]' && !contains(github.event.head_commit.message, '[skip ci]') && github.repository == 'JackZong/vue-vexo-admin'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: ./.github/actions/setup-node
+
+      - name: Build
+        run: pnpm build
+
+      - name: ssh deploy
+        uses: easingthemes/ssh-deploy@v5.1.0
+        with:
+            # Private key part of an SSH key pair
+            SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+            # Remote host
+            REMOTE_HOST: ${{ secrets.HOST }}
+            # Remote user
+            REMOTE_USER: ${{ secrets.USERNAME }}
+            # Source directory, path relative to `$GITHUB_WORKSPACE` root, eg: `dist/`
+            SOURCE: ./docs/
+            # Target directory
+            TARGET: /www/wwwroot/vexo.paxcq.com/dist/
+
+  deploy-docs:
+    name: Deploy Push Docs
+    if: github.actor != 'dependabot[bot]' && !contains(github.event.head_commit.message, '[skip ci]') && github.repository == 'JackZong/vue-vexo-admin'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: ./.github/actions/setup-node
+
+      - name: Build
+        run: pnpm docs:build
+
+      - name: ssh deploy
+        uses: easingthemes/ssh-deploy@v5.1.0
+        with:
+            # Private key part of an SSH key pair
+            SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+            # Remote host
+            REMOTE_HOST: ${{ secrets.HOST }}
+            # Remote user
+            REMOTE_USER: ${{ secrets.USERNAME }}
+            # Source directory, path relative to `$GITHUB_WORKSPACE` root, eg: `dist/`
+            SOURCE: ./docs/.vitepress/dist/
+            # Target directory
+            TARGET: /www/wwwroot/vexo/docs.paxcq.com/dist/
+
+  rerun-on-failure:
+    name: Rerun on failure
+    needs:
+      - deploy-playground
+      - deploy-docs
+    if: failure() && fromJSON(github.run_attempt) < 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retry ${{ fromJSON(github.run_attempt) }} of 10
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run rerun.yml -F run_id=${{ github.run_id }}
