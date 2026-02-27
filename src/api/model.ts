@@ -1,7 +1,4 @@
-
-
 import request from '@/utils/request'
-
 // 机型下拉选
 export function modelAll() {
   return request.get({ url: '/model/all' })

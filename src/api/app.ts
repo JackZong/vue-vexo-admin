@@ -1,5 +1,3 @@
-
-
 import request from '@/utils/request'
 
 // 配置

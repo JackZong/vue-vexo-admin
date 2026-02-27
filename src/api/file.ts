@@ -1,5 +1,3 @@
-
-
 import request from '@/utils/request'
 
 export function fileCateAdd(params: Record<string, any>) {

@@ -1,5 +1,3 @@
-
-
 import request from '@/utils/request'
 
 // 国家和地区下拉选
