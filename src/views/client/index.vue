@@ -10,7 +10,7 @@
                 <el-form-item :label="$t('clientName')" prop="clientName">
                     <el-input v-model="queryParams.clientName" />
                 </el-form-item>
-                <el-form-item>
+                <el-form-item class="!mb-4 self-end">
                     <div class="search-btn-group">
                         <el-button @click="resetParams">{{ $t('reset') }}</el-button>
                         <el-button type="primary" @click="resetPage">{{ $t('search') }}</el-button>
@@ -27,7 +27,7 @@
                 </el-button>
             </div>
 
-            <el-table class="mt-4" size="large" v-loading="pager.loading" :data="pager.lists">
+            <el-table v-loading="pager.loading" class="mt-4" size="large" :data="pager.lists">
                 <el-table-column :label="$t('clientName')" prop="clientName" min-width="100" />
                 <el-table-column :label="$t('clientId')" prop="clientCode" min-width="100" />
                 <el-table-column :label="$t('contactName')" prop="contactPerson" min-width="100" />
@@ -67,26 +67,26 @@
                         <div class="flex">
                             <!-- 编辑 -->
                             <icon-button
-                                @click="handleEdit(row)"
                                 name="local-icon-edit"
                                 :content="$t('edit')"
+                                @click="handleEdit(row)"
                             />
                             <!-- 启用 -->
                             <icon-button
                                 v-if="row.status === ClientStatusEnum.Disabled"
                                 class="ml-3"
-                                @click="handleEnable(row.id)"
                                 name="local-icon-enable"
                                 :content="$t('action.enable')"
+                                @click="handleEnable(row.id)"
                             />
                             <!-- 禁用 -->
                             <icon-button
                                 v-if="row.status === ClientStatusEnum.Enabled"
                                 class="ml-3"
-                                @click="handleDisable(row.id)"
                                 name="local-icon-disable"
                                 color="var(--el-color-danger)"
                                 :content="$t('action.disable')"
+                                @click="handleDisable(row.id)"
                             />
                         </div>
                     </template>
@@ -136,21 +136,21 @@ const handleEdit = async (data: any) => {
     editRef.value?.getDetail(data)
 }
 
-const handleDelete = async (id: number) => {
-    await feedback.confirm('确定要删除？')
+const handleDelete = async (id: string) => {
+    await feedback.confirm(t('client.delete.tip'), t('action.delete'))
     await clientDelete(id)
-    feedback.msgSuccess('删除成功')
+    feedback.msgSuccess(t('deleteSuccess'))
     getLists()
 }
 
-const handleDisable = async (id: number) => {
-    await feedback.confirm(t('admin.disable.tip'), t('action.disable'))
+const handleDisable = async (id: string) => {
+    await feedback.confirm(t('client.disable.tip'), t('action.disable'))
     await clientLock(id)
     getLists()
 }
 
-const handleEnable = async (id: number) => {
-    await feedback.confirm(t('admin.enable.tip'), t('action.enable'))
+const handleEnable = async (id: string) => {
+    await feedback.confirm(t('client.enable.tip'), t('action.enable'))
     await clientUnlock(id)
     getLists()
 }

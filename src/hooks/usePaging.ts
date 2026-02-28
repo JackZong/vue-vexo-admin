@@ -34,13 +34,14 @@ export function usePaging(options: Options) {
     const getLists = () => {
         pager.loading = true
         return fetchFun({
-          pageSize: pager.size,
+            page: pager.page,
+            pageSize: pager.size,
             ...params,
             ...fixedParams
         })
             .then((res: any) => {
                 pager.count = res?.total
-                pager.lists = res?.records
+                pager.lists = res?.items
                 // pager.extend = res?.extend
                 return Promise.resolve(res)
             })

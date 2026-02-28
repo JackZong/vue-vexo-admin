@@ -626,7 +626,7 @@ const _inlineRuntimeConfig = {
           "access-control-allow-headers": "*",
           "access-control-max-age": "0",
           "Access-Control-Allow-Credentials": "true",
-          "Access-Control-Allow-Headers": "Accept, Authorization, Content-Length, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With",
+          "Access-Control-Allow-Headers": "Accept, Authorization, Content-Length, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With, Version",
           "Access-Control-Allow-Methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Expose-Headers": "*"
@@ -1018,8 +1018,8 @@ const _RelhwV = eventHandler((event) => {
 
 function useResponseSuccess(data) {
   return {
-    code: 0,
-    data,
+    code: 2e4,
+    result: data,
     error: null,
     message: "ok"
   };
@@ -1082,6 +1082,14 @@ const _lazy_reug5g = () => Promise.resolve().then(function () { return codes$1; 
 const _lazy_emn4DM = () => Promise.resolve().then(function () { return login_post$1; });
 const _lazy_ybLon8 = () => Promise.resolve().then(function () { return logout_post$1; });
 const _lazy_xfF8RG = () => Promise.resolve().then(function () { return refresh_post$1; });
+const _lazy_YjEl2o = () => Promise.resolve().then(function () { return _post$3; });
+const _lazy_niCVYq = () => Promise.resolve().then(function () { return _id__delete$3; });
+const _lazy_8HXqzH = () => Promise.resolve().then(function () { return _id__put$3; });
+const _lazy_ZaFRNx = () => Promise.resolve().then(function () { return _id_$1; });
+const _lazy_cPiONp = () => Promise.resolve().then(function () { return lock_patch$1; });
+const _lazy_Y7rmH8 = () => Promise.resolve().then(function () { return unlock_patch$1; });
+const _lazy_Hrlsx8 = () => Promise.resolve().then(function () { return all$3; });
+const _lazy_GBRGQZ = () => Promise.resolve().then(function () { return list$9; });
 const _lazy_iFLrtN = () => Promise.resolve().then(function () { return bigint$1; });
 const _lazy_ZDNsjq = () => Promise.resolve().then(function () { return all$1; });
 const _lazy_vf9k2N = () => Promise.resolve().then(function () { return status$1; });
@@ -1110,6 +1118,14 @@ const handlers = [
   { route: '/api/auth/login', handler: _lazy_emn4DM, lazy: true, middleware: false, method: "post" },
   { route: '/api/auth/logout', handler: _lazy_ybLon8, lazy: true, middleware: false, method: "post" },
   { route: '/api/auth/refresh', handler: _lazy_xfF8RG, lazy: true, middleware: false, method: "post" },
+  { route: '/api/client/', handler: _lazy_YjEl2o, lazy: true, middleware: false, method: "post" },
+  { route: '/api/client/:id', handler: _lazy_niCVYq, lazy: true, middleware: false, method: "delete" },
+  { route: '/api/client/:id', handler: _lazy_8HXqzH, lazy: true, middleware: false, method: "put" },
+  { route: '/api/client/:id', handler: _lazy_ZaFRNx, lazy: true, middleware: false, method: undefined },
+  { route: '/api/client/:id/lock', handler: _lazy_cPiONp, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/client/:id/unlock', handler: _lazy_Y7rmH8, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/client/all', handler: _lazy_Hrlsx8, lazy: true, middleware: false, method: undefined },
+  { route: '/api/client/list', handler: _lazy_GBRGQZ, lazy: true, middleware: false, method: undefined },
   { route: '/api/demo/bigint', handler: _lazy_iFLrtN, lazy: true, middleware: false, method: undefined },
   { route: '/api/menu/all', handler: _lazy_ZDNsjq, lazy: true, middleware: false, method: undefined },
   { route: '/api/status', handler: _lazy_vf9k2N, lazy: true, middleware: false, method: undefined },
@@ -1952,6 +1968,164 @@ const refresh_post$1 = /*#__PURE__*/Object.freeze({
   default: refresh_post
 });
 
+const _post$2 = eventHandler(async (event) => {
+  const userinfo = verifyAccessToken(event);
+  if (!userinfo) {
+    return unAuthorizedResponse(event);
+  }
+  await sleep(600);
+  return useResponseSuccess(null);
+});
+
+const _post$3 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  default: _post$2
+});
+
+const _id__delete$2 = eventHandler(async (event) => {
+  const userinfo = verifyAccessToken(event);
+  if (!userinfo) {
+    return unAuthorizedResponse(event);
+  }
+  await sleep(600);
+  return useResponseSuccess(null);
+});
+
+const _id__delete$3 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  default: _id__delete$2
+});
+
+const _id__put$2 = eventHandler(async (event) => {
+  const userinfo = verifyAccessToken(event);
+  if (!userinfo) {
+    return unAuthorizedResponse(event);
+  }
+  await sleep(600);
+  return useResponseSuccess(null);
+});
+
+const _id__put$3 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  default: _id__put$2
+});
+
+function generateMockClients(count) {
+  const list = [];
+  for (let i = 0; i < count; i++) {
+    list.push({
+      id: faker.string.uuid(),
+      clientName: faker.company.name(),
+      clientCode: `CLT-${faker.date.recent().toISOString().slice(0, 10).replace(/-/g, "")}-${String(i + 1).padStart(3, "0")}`,
+      contactPerson: faker.person.fullName(),
+      contactNumber: faker.phone.number(),
+      timeZone: faker.helpers.arrayElement([
+        "Asia/Shanghai",
+        "America/New_York",
+        "Europe/London",
+        "Asia/Tokyo",
+        "Asia/Seoul"
+      ]),
+      status: faker.helpers.arrayElement(["0", "1"]),
+      gmtCreate: faker.date.past().toISOString().slice(0, 19).replace("T", " "),
+      gmtModified: faker.date.recent().toISOString().slice(0, 19).replace("T", " ")
+    });
+  }
+  return list;
+}
+const mockClients = generateMockClients(50);
+const list$8 = eventHandler(async (event) => {
+  const userinfo = verifyAccessToken(event);
+  if (!userinfo) {
+    return unAuthorizedResponse(event);
+  }
+  await sleep(300);
+  const { page, pageSize, clientName } = getQuery$1(event);
+  let filtered = [...mockClients];
+  if (clientName && typeof clientName === "string") {
+    filtered = filtered.filter(
+      (item) => item.clientName.toLowerCase().includes(clientName.toLowerCase())
+    );
+  }
+  const pageRaw = Array.isArray(page) ? page[0] : page;
+  const pageSizeRaw = Array.isArray(pageSize) ? pageSize[0] : pageSize;
+  const pageNumber = Math.max(1, Number.parseInt(String(pageRaw != null ? pageRaw : "1"), 10) || 1);
+  const pageSizeNumber = Math.min(100, Math.max(1, Number.parseInt(String(pageSizeRaw != null ? pageSizeRaw : "10"), 10) || 10));
+  return usePageResponseSuccess(String(pageNumber), String(pageSizeNumber), filtered);
+});
+
+const list$9 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  default: list$8,
+  mockClients: mockClients
+});
+
+const _id_ = eventHandler(async (event) => {
+  const userinfo = verifyAccessToken(event);
+  if (!userinfo) {
+    return unAuthorizedResponse(event);
+  }
+  await sleep(300);
+  const id = getRouterParam(event, "id");
+  const client = mockClients.find((item) => item.id === id);
+  if (!client) {
+    return useResponseError("Client not found");
+  }
+  return useResponseSuccess(client);
+});
+
+const _id_$1 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  default: _id_
+});
+
+const lock_patch = eventHandler(async (event) => {
+  const userinfo = verifyAccessToken(event);
+  if (!userinfo) {
+    return unAuthorizedResponse(event);
+  }
+  await sleep(600);
+  return useResponseSuccess(null);
+});
+
+const lock_patch$1 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  default: lock_patch
+});
+
+const unlock_patch = eventHandler(async (event) => {
+  const userinfo = verifyAccessToken(event);
+  if (!userinfo) {
+    return unAuthorizedResponse(event);
+  }
+  await sleep(600);
+  return useResponseSuccess(null);
+});
+
+const unlock_patch$1 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  default: unlock_patch
+});
+
+const all$2 = eventHandler(async (event) => {
+  const userinfo = verifyAccessToken(event);
+  if (!userinfo) {
+    return unAuthorizedResponse(event);
+  }
+  await sleep(200);
+  const allClients = mockClients.map((item) => ({
+    id: item.id,
+    clientName: item.clientName,
+    clientCode: item.clientCode
+  }));
+  return useResponseSuccess(allClients);
+});
+
+const all$3 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  default: all$2
+});
+
 const bigint = eventHandler(async (event) => {
   const userinfo = verifyAccessToken(event);
   if (!userinfo) {
@@ -2439,13 +2613,14 @@ const info$1 = /*#__PURE__*/Object.freeze({
 
 const _____ = defineEventHandler(() => {
   return `
-<h1>Hello Olinc Admin</h1>
+<h1>Hello VUE VEXO ADMIN</h1>
 <h2>Mock service is starting</h2>
 <ul>
 <li><a href="/api/user">/api/user/info</a></li>
 <li><a href="/api/menu">/api/menu/all</a></li>
 <li><a href="/api/auth/codes">/api/auth/codes</a></li>
 <li><a href="/api/auth/login">/api/auth/login</a></li>
+<li><a href="/api/client">/api/client/list</a></li>
 <li><a href="/api/upload">/api/upload</a></li>
 </ul>
 `;
